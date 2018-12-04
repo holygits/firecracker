@@ -68,7 +68,7 @@ def _test_microvm_boottime(
     )
     assert microvm.api_session.is_good_response(response.status_code)
 
-    microvm.start()
+    microvm.start_async()
     time.sleep(0.4)
     lines = log_fifo.sequential_fifo_reader(20)
 

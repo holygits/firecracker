@@ -10,6 +10,7 @@ destroy microvms.
 - Use the Firecracker Open API spec to populate Microvm API resource URLs.
 """
 
+import asyncio
 import os
 import re
 from subprocess import run, PIPE
@@ -399,3 +400,18 @@ class Microvm:
         """
         response = self.actions.put(action_type='InstanceStart')
         assert self._api_session.is_good_response(response.status_code)
+
+    def start_async(self):
+        """Start the microvm asynchronously.
+
+        This function has asserts to validate that the microvm boot success
+        using a callback.
+        """
+        task = asyncio.create_task(
+            self.actions.put(action_type='InstanceStart')
+        )
+
+        def callback(response):
+            assert self._api_session.is_good_response(response.status_code)
+
+        task.add_done_callback(callback)
